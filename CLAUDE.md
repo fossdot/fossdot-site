@@ -58,7 +58,7 @@ site's hand-built origins — keep both working when editing templates:
 
 ## Deploying
 
-`base_url` in `config.toml` is currently the GitHub Pages project URL. To move to
-the `fossdot.in` custom domain: set `base_url = "https://fossdot.in"`, add a
-`static/CNAME` file containing `fossdot.in`, set the domain under repo
-Settings → Pages, and point DNS at GitHub Pages.
+Served at the `fossdot.in` custom domain. `base_url` is `https://fossdot.in`,
+the apex is pinned by `static/CNAME`, and DNS lives at Namecheap (four A records
+on `@` → GitHub Pages IPs `185.199.108-111.153`, plus `www` CNAME →
+`fossdot.github.io`). Pushing to `main` rebuilds and redeploys via Actions.

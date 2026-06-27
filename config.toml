@@ -1,9 +1,7 @@
 # Zola config — https://www.getzola.org/documentation/getting-started/configuration/
-# base_url is the GitHub Pages project URL for now. To move to fossdot.in:
-#   1. set base_url = "https://fossdot.in"
-#   2. add static/CNAME containing: fossdot.in
-#   3. set the custom domain under repo Settings -> Pages, and point DNS at GitHub.
-base_url = "https://fossdot.github.io/fossdot-site"
+# Served at the fossdot.in custom domain (DNS at Namecheap -> GitHub Pages IPs;
+# the apex is set via static/CNAME).
+base_url = "https://fossdot.in"
 title = "Vishal Arya"
 description = "Personal site of Vishal Arya — building Bodhya, director at FOSS United."
 

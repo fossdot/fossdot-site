@@ -1,1 +1,5 @@
 .DS_Store
+
+# Zola build output
+/public
+

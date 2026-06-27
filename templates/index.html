@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1 class="name" data-hi="विशाल आर्य">Vishal Arya</h1>
+  <p class="role" data-hi="बोध्या · FOSS United · बिहार">Bodhya · FOSS United · Bihar</p>
+
+  <p class="intro" data-hi='मैं विशाल आर्य हूँ, <a href="https://bodhya.net">बोध्या</a> के ज़रिए बिहार की कुछ सामाजिक समस्याओं को सुलझाने की कोशिश कर रहा हूँ — यह एक पहल है जिसे मैं बना रहा हूँ। मैं <a href="https://fossunited.org">FOSS United</a> के बोर्ड में निदेशक भी हूँ, जिससे मैं इसके शुरुआती दिनों से जुड़ा रहा हूँ।'>
+    I'm Vishal Arya, using technology to chip away at a few social problems in Bihar through
+    <a href="https://bodhya.net">Bodhya</a>, an initiative I'm building.
+    I'm also a director on the board at <a href="https://fossunited.org">FOSS United</a>,
+    which I've been part of since its early days.
+  </p>
+
+  <div class="sections">
+
+  <section>
+    <h2 data-hi="सामाजिक परियोजनाएँ">Social projects</h2>
+    <ul>
+      <li data-hi='<a href="https://hikmat.bodhya.net">स्कूल से रोज़गार तक</a> — <span class="desc">पश्चिमी चंपारण में वंचित लड़कियों को प्रशिक्षण</span>'><a href="https://hikmat.bodhya.net">School to Livelihood</a> — <span class="desc">training under-privileged girls in West Champaran</span></li>
+      <li data-hi='<a href="https://fossunited.org/c/bihar">FOSS United Bihar</a> — <span class="desc">बिहार के इंजीनियरिंग कॉलेजों में फ्री और ओपन सोर्स को बढ़ावा देना</span>'><a href="https://fossunited.org/c/bihar">FOSS United Bihar</a> — <span class="desc">promoting Free and Open Source in engineering colleges in Bihar</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2 data-hi="सॉफ़्टवेयर परियोजनाएँ">Software projects</h2>
+    <ul>
+      <li data-hi='<a href="https://yojana.bodhya.net">बिहार स्कीम ट्रैकर</a> — <span class="desc">बिहार सरकार की योजनाओं को खोजना और सूचीबद्ध करना</span>'><a href="https://yojana.bodhya.net">Bihar Scheme Tracker</a> — <span class="desc">finding and cataloguing Bihar government schemes</span></li>
+      <li data-hi='<a href="https://learn.bodhya.net">हिकमत गेम्स</a> — <span class="desc">हिकमत कार्यक्रम के लिए सीखने वाले खेल</span>'><a href="https://learn.bodhya.net">Hikmat Games</a> — <span class="desc">learning games for the Hikmat program</span></li>
+      <li data-hi='<a href="https://github.com/fossdot/rolodex">रोलोडेक्स</a> — <span class="desc">संस्थाओं के लिए रिलेशनशिप ट्रैकर</span>'><a href="https://github.com/fossdot/rolodex">Rolodex</a> — <span class="desc">a relationship tracker for organisations</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2 data-hi="ब्लॉग">Blog</h2>
+    <ul>
+      {% set blog = get_section(path="blog/_index.md") %}
+      {% for post in blog.pages | slice(end=3) %}
+      <li><a href="{{ post.permalink | safe }}">{{ post.title }}</a> — <span class="desc">{{ post.description }}{% if post.date %} · {{ post.date | date(format="%b %Y") }}{% endif %}</span></li>
+      {% endfor %}
+      <li data-hi='<a href="{{ get_url(path="@/blog/_index.md") | safe }}">सभी लेख →</a>'><a href="{{ get_url(path="@/blog/_index.md") | safe }}">All posts →</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2 data-hi="अन्यत्र">Elsewhere</h2>
+    <ul>
+      <li data-hi='<a href="https://github.com/fossdot">GitHub</a> — <span class="desc">कोड</span>'><a href="https://github.com/fossdot">GitHub</a> — <span class="desc">code</span></li>
+      <li data-hi='<a href="https://mas.to/@fossdot">Mastodon</a> — <span class="desc">टूट्स</span>'><a href="https://mas.to/@fossdot">Mastodon</a> — <span class="desc">toots</span></li>
+      <li data-hi='<a href="https://x.com/fossdot">Twitter / X</a> — <span class="desc">पोस्ट्स</span>'><a href="https://x.com/fossdot">Twitter / X</a> — <span class="desc">posts</span></li>
+      <li data-hi='<a href="https://www.linkedin.com/in/fossdot/">LinkedIn</a> — <span class="desc">काम</span>'><a href="https://www.linkedin.com/in/fossdot/">LinkedIn</a> — <span class="desc">work</span></li>
+      <li data-hi='<a href="mailto:vishal@bodhya.net">ईमेल</a> — <span class="desc">संपर्क करें</span>'><a href="mailto:vishal@bodhya.net">Email</a> — <span class="desc">reach me</span></li>
+    </ul>
+  </section>
+
+  </div>
+{% endblock content %}

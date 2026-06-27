@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ config.title }}{% endblock title %}</title>
+<meta name="description" content="{% block description %}{{ config.description }}{% endblock description %}">
+<meta name="author" content="Vishal Arya">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fcfbf9">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#161514">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%23d2603a%22/><text x=%2213.5%22 y=%2222.5%22 text-anchor=%22middle%22 font-family=%22Georgia,serif%22 font-size=%2221%22 font-weight=%22700%22 fill=%22%23fff%22>f</text><rect x=%2218%22 y=%2218.5%22 width=%224%22 height=%224%22 rx=%220.6%22 fill=%22%23fff%22/></svg>">
+{% if config.generate_feeds %}<link rel="alternate" type="application/atom+xml" title="{{ config.title }}" href="{{ get_url(path='atom.xml', trailing_slash=false) | safe }}">{% endif %}
+<link rel="stylesheet" href="{{ get_url(path='style.css', cachebust=true) | safe }}">
+</head>
+<body>
+<main>
+
+  <div class="topbar">
+    <button id="langBtn" class="ctrl" type="button">हिंदी</button>
+    <button id="themeBtn" class="ctrl" type="button" aria-label="Toggle dark mode">🌙</button>
+  </div>
+
+  {% block content %}{% endblock content %}
+
+  <footer data-hi='fossdot.in · आख़िरी अपडेट 2026 · <a href="https://github.com/fossdot/fossdot-site">स्रोत</a>'>
+    fossdot.in · last updated 2026 ·
+    <a href="https://github.com/fossdot/fossdot-site">source</a>
+  </footer>
+
+</main>
+<script src="{{ get_url(path='app.js', cachebust=true) | safe }}"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 # the apex is set via static/CNAME).
 base_url = "https://fossdot.in"
 title = "Vishal Arya"
-description = "Personal site of Vishal Arya — building Bodhya, director at FOSS United."
+description = "Vishal Arya — building Bodhya, using technology for social good in Bihar, and a director at FOSS United."
 
 default_language = "en"
 generate_feeds = true

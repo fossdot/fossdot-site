@@ -3,16 +3,109 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+{# One place to resolve the page's identity, so <title>, canonical, Open Graph and
+   the structured data can never drift apart. set_global, because a plain set
+   inside a branch does not survive the branch. #}
+{% if page %}
+  {% set_global m_name = page.title %}
+  {% set_global m_desc = page.description | default(value=config.description) %}
+  {% set_global m_url  = page.permalink %}
+  {% set_global m_type = "article" %}
+{% elif section %}
+  {% set_global m_name = section.title %}
+  {% set_global m_desc = section.description | default(value=config.description) %}
+  {% set_global m_url  = section.permalink %}
+  {% set_global m_type = "website" %}
+{% else %}
+  {% set_global m_name = config.title %}
+  {% set_global m_desc = config.description %}
+  {% set_global m_url  = config.base_url ~ "/" %}
+  {% set_global m_type = "website" %}
+{% endif %}
+{# The homepage's section title is the site title; suffixing would read "X — X". #}
+{% if m_name == config.title %}
+  {% set_global m_title = config.title %}
+{% else %}
+  {% set_global m_title = m_name ~ " — " ~ config.title %}
+{% endif %}
+{% set og_image = get_url(path='og.png', trailing_slash=false) %}
+
 <title>{% block title %}{{ config.title }}{% endblock title %}</title>
 <meta name="description" content="{% block description %}{{ config.description }}{% endblock description %}">
 <meta name="author" content="Vishal Arya">
+<link rel="canonical" href="{{ m_url | safe }}">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fcfbf9">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#161514">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%23d2603a%22/><text x=%2213.5%22 y=%2222.5%22 text-anchor=%22middle%22 font-family=%22Georgia,serif%22 font-size=%2221%22 font-weight=%22700%22 fill=%22%23fff%22>f</text><rect x=%2218%22 y=%2218.5%22 width=%224%22 height=%224%22 rx=%220.6%22 fill=%22%23fff%22/></svg>">
+
+{# Link previews. og:image is a raster — most platforms will not render an SVG here. #}
+<meta property="og:type" content="{{ m_type }}">
+<meta property="og:site_name" content="{{ config.title }}">
+<meta property="og:title" content="{{ m_title }}">
+<meta property="og:description" content="{{ m_desc }}">
+<meta property="og:url" content="{{ m_url | safe }}">
+<meta property="og:locale" content="en_IN">
+<meta property="og:image" content="{{ og_image | safe }}">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Vishal Arya — fossdot.in, beside a Mithila (Madhubani) painting of a lotus rosette ringed by peacocks and fish">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ m_title }}">
+<meta name="twitter:description" content="{{ m_desc }}">
+<meta name="twitter:image" content="{{ og_image | safe }}">
+<meta name="twitter:creator" content="@fossdot">
+
+{# Icons cut from the painting's central rosette. #}
+<link rel="icon" type="image/png" sizes="32x32" href="{{ get_url(path='favicon-32.png', cachebust=true) | safe }}">
+<link rel="icon" type="image/png" sizes="192x192" href="{{ get_url(path='icon-192.png', cachebust=true) | safe }}">
+<link rel="apple-touch-icon" href="{{ get_url(path='apple-touch-icon.png', cachebust=true) | safe }}">
 {% if config.generate_feeds %}<link rel="alternate" type="application/atom+xml" title="{{ config.title }}" href="{{ get_url(path='atom.xml', trailing_slash=false) | safe }}">{% endif %}
 <link rel="stylesheet" href="{{ get_url(path='style.css', cachebust=true) | safe }}">
 </head>
 <body>
+
+{# Icon sprite: one definition each, referenced by <use> from the project lists.
+   Stroke-only and currentColor, so they take the row's colour and hover state. #}
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <g id="i-school" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 4 2.5 8.5 12 13l9.5-4.5z"/>
+      <path d="M6 10.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-5.5"/>
+      <path d="M21.5 8.5V15"/>
+    </g>
+    <g id="i-community" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="6.5" r="2.8"/>
+      <circle cx="5" cy="15" r="2.4"/>
+      <circle cx="19" cy="15" r="2.4"/>
+      <path d="M9.6 8.6 7 12.8M14.4 8.6 17 12.8M7.4 16.6h9.2"/>
+    </g>
+    <g id="i-scheme" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14.5 2.5H6a1.5 1.5 0 0 0-1.5 1.5v16A1.5 1.5 0 0 0 6 21.5h12a1.5 1.5 0 0 0 1.5-1.5V7.5z"/>
+      <path d="M14.5 2.5v5h5"/>
+      <circle cx="11" cy="14" r="2.9"/>
+      <path d="m13.2 16.2 2.3 2.3"/>
+    </g>
+    <g id="i-game" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2.5" y="7.5" width="19" height="11" rx="4.5"/>
+      <path d="M7 11v4M5 13h4M15.5 12.5h.01M18 15h.01"/>
+    </g>
+    <g id="i-rolodex" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2.5" y="4.5" width="19" height="15" rx="2"/>
+      <path d="M2.5 9h19"/>
+      <circle cx="9" cy="13.5" r="1.9"/>
+      <path d="M13.5 12.5h4.5M13.5 15.5h3"/>
+    </g>
+    <g id="i-moon" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20.3 14.6A8.5 8.5 0 0 1 9.4 3.7a8.9 8.9 0 1 0 10.9 10.9z"/>
+    </g>
+    <g id="i-sun" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4.1"/>
+      <path d="M12 2.6v2.5M12 18.9v2.5M2.6 12h2.5M18.9 12h2.5M5.4 5.4l1.8 1.8M16.8 16.8l1.8 1.8M18.6 5.4l-1.8 1.8M7.2 16.8l-1.8 1.8"/>
+    </g>
+  </defs>
+</svg>
+
 <main>
 
   <div class="topbar">
@@ -22,13 +115,58 @@
       <button class="langopt" type="button" role="radio" data-lang="hi"
               aria-checked="false" tabindex="-1" aria-label="हिंदी" lang="hi">हिं</button>
     </div>
-    <button id="themeBtn" class="ctrl" type="button" aria-label="Toggle dark mode">🌙</button>
+    {# Which glyph shows is decided in CSS from the resolved theme, so it is right
+       on first paint; app.js only keeps the label in step. #}
+    <button id="themeBtn" class="ctrl ctrl-icon" type="button" aria-label="Switch to dark theme">
+      <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-moon"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg>
+    </button>
   </div>
 
   {% block content %}{% endblock content %}
 
-  <footer data-hi='fossdot.in · आख़िरी अपडेट 2026 · <a href="https://github.com/fossdot/fossdot-site">स्रोत</a>'>
-    fossdot.in · last updated 2026 ·
+{# Structured data: ties the site to a person rather than a loose page, and lists
+   the profiles search engines use to confirm they are the same Vishal Arya. #}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "{{ config.base_url | safe }}/#person",
+      "name": "Vishal Arya",
+      "url": "{{ config.base_url | safe }}/",
+      "image": "{{ get_url(path='apple-touch-icon.png', trailing_slash=false) | safe }}",
+      "description": "{{ config.description }}",
+      "jobTitle": "Founder, Bodhya",
+      "knowsLanguage": ["en", "hi"],
+      "homeLocation": { "@type": "Place", "name": "Bihar, India" },
+      "sameAs": [
+        "https://github.com/fossdot",
+        "https://mas.to/@fossdot",
+        "https://x.com/fossdot",
+        "https://www.linkedin.com/in/fossdot/",
+        "https://www.instagram.com/fossdot/"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "{{ config.base_url | safe }}/#website",
+      "url": "{{ config.base_url | safe }}/",
+      "name": "{{ config.title }}",
+      "description": "{{ config.description }}",
+      "inLanguage": ["en", "hi"],
+      "publisher": { "@id": "{{ config.base_url | safe }}/#person" }
+    }
+  ]
+}
+</script>
+
+  {# Stamped at build time, so it stays honest without anyone editing it. #}
+  {% set built = now() | date(format="%d-%m-%Y") %}
+  <footer data-hi='fossdot.in · आख़िरी अपडेट {{ built }} · <a href="{{ get_url(path="@/blog/_index.md") | safe }}">ब्लॉग</a> · <a href="https://github.com/fossdot/fossdot-site">स्रोत</a>'>
+    fossdot.in · last updated {{ built }} ·
+    <a href="{{ get_url(path='@/blog/_index.md') | safe }}">blog</a> ·
     <a href="https://github.com/fossdot/fossdot-site">source</a>
   </footer>
 

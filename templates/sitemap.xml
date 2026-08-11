@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+{# The external link-posts render as noindex redirects; submitting them would be
+   asking Google to crawl pages we have told it to ignore. #}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{%- for sitemap_entry in entries %}
+  {%- if not sitemap_entry.extra or not sitemap_entry.extra.external_url %}
+  <url>
+    <loc>{{ sitemap_entry.permalink | escape_xml | safe }}</loc>
+    {%- if sitemap_entry.updated %}
+    <lastmod>{{ sitemap_entry.updated }}</lastmod>
+    {%- endif %}
+  </url>
+  {%- endif %}
+{%- endfor %}
+</urlset>

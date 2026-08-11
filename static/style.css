@@ -7,6 +7,9 @@
   --accent: #c75a35;
   --code:   #f3f1ec;
   --hover:  rgba(0, 0, 0, .04);
+  --surface: #ffffff;
+  --terra:      #faeee6;
+  --terra-line: #eed7c8;
   color-scheme: light;
 }
 /* dark palette — system preference (unless user forced light) or explicit toggle */
@@ -15,6 +18,8 @@
     --bg: #161514; --fg: #f2f1ee; --muted: #a3a19b; --faint: #76746e;
     --line: #292723; --accent: #f0855c; --code: #211f1c;
     --hover: rgba(255, 255, 255, .055);
+    --surface: #1e1c1a;
+    --terra: #251a15; --terra-line: #3d2a20;
     color-scheme: dark;
   }
 }
@@ -22,6 +27,8 @@
   --bg: #161514; --fg: #f2f1ee; --muted: #a3a19b; --faint: #76746e;
   --line: #292723; --accent: #f0855c; --code: #211f1c;
   --hover: rgba(255, 255, 255, .055);
+  --surface: #1e1c1a;
+  --terra: #251a15; --terra-line: #3d2a20;
   color-scheme: dark;
 }
 
@@ -47,6 +54,39 @@ main {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: none; }
 }
+
+/* --- block cascade ---
+   app.js stamps each block with --td (its position in the stack). Theme changes
+   apply that as a transition-delay so the new palette sweeps down the page one
+   panel at a time; language changes fade each panel as its text is replaced.
+   The delays are scoped to .theming so hover states never feel laggy. */
+/* transition-property is restated for every participant, not just duration and
+   delay. Elements already carrying a narrower transition — .rowlist li > a only
+   lists `background` — would otherwise keep their own property list, so their
+   colour changed the instant :root's tokens flipped while the panels were still
+   cascading, leaving dark text on an already-dark card. --td inherits, so a
+   panel and everything inside it move together. */
+:root.theming .card,
+:root.theming .card *,
+:root.theming h1,
+:root.theming h1 *,
+:root.theming footer,
+:root.theming footer *,
+:root.theming .postcard,
+:root.theming .postcard * {
+  transition-property: background-color, border-color, color, fill, stroke, outline-color;
+  transition-duration: .6s;
+  transition-timing-function: ease;
+  transition-delay: var(--td, 0ms);
+}
+/* The page ground leads, so the panels read as sweeping across a settled backdrop. */
+:root.theming body { transition: background-color .45s ease, color .45s ease; }
+
+@keyframes swapin {
+  from { opacity: .15; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+.swapping { animation: swapin .45s cubic-bezier(.21,.6,.35,1) both; }
 
 /* --- top controls --- */
 .topbar { display: flex; align-items: center; justify-content: flex-end; gap: .4rem; margin-bottom: 2.5rem; }
@@ -76,7 +116,19 @@ main {
   transition: color .2s ease, border-color .2s ease, background .2s ease;
 }
 .ctrl:hover { color: var(--fg); border-color: var(--faint); }
-#themeBtn { padding: .34rem .55rem; font-size: .85rem; }
+.ctrl-icon { display: inline-flex; align-items: center; justify-content: center; padding: .3rem .48rem; }
+.ctrl-icon svg { display: block; width: 16px; height: 16px; }
+.ctrl:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Moon while the page is light, sun while it is dark — mirroring the palette's own
+   light/dark conditions, so the glyph is correct before any script runs. */
+#themeBtn .icon-sun { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) #themeBtn .icon-moon { display: none; }
+  :root:not([data-theme="light"]) #themeBtn .icon-sun  { display: block; }
+}
+:root[data-theme="dark"] #themeBtn .icon-moon { display: none; }
+:root[data-theme="dark"] #themeBtn .icon-sun  { display: block; }
 
 /* --- headings / hero --- */
 h1 {
@@ -84,14 +136,12 @@ h1 {
   font-weight: 700; letter-spacing: -.03em; line-height: 1.05; margin: 0;
 }
 h1.name::after { content: "."; color: var(--accent); }
-.role {
-  margin: .85rem 0 0; font-size: .82rem; font-weight: 600;
-  text-transform: uppercase; letter-spacing: .1em; color: var(--faint);
-}
 .intro {
   margin: 1.6rem 0 0; max-width: 36rem;
   font-size: 1.2rem; line-height: 1.55; letter-spacing: -.003em; color: var(--fg);
 }
+/* The lede as its own module, so it opens the stack instead of floating above it. */
+.intro.card { max-width: none; margin-top: 1.9rem; padding: 1.3rem 1.4rem; }
 .intro a { font-weight: 500; }
 
 /* --- links --- */
@@ -100,17 +150,29 @@ a:hover { text-decoration: underline; text-underline-offset: .18em; text-decorat
 .muted { color: var(--muted); }
 .desc { color: var(--muted); font-weight: 400; }
 
-/* --- homepage sections --- */
+/* --- homepage sections ---
+   Each section is a self-contained module: its own surface, border and padding,
+   so the page reads as a stack of panels rather than one continuous column.
+   Deliberately plain — the Mithila painting appears in exactly one place on the
+   page, the Contact panel, and stays the stronger for it. */
+/* colour is stated, not inherited from body — body changes on its own clock, and
+   inheriting a mid-transition colour makes a panel chase a moving target. */
+.card {
+  background: var(--surface); color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: 14px; padding: 1.25rem 1.35rem;
+}
 .sections {
-  margin-top: 3.75rem; display: grid; grid-template-columns: 1fr; gap: 2.75rem 3rem;
+  margin-top: 2.5rem; display: grid; grid-template-columns: 1fr; gap: 1rem;
 }
 @media (min-width: 680px) { .sections { grid-template-columns: 1fr 1fr; } }
-.sections section { margin: 0; }
+/* Cards in the same row stretch to match, so columns never end ragged. */
+.sections section { margin: 0; display: flex; flex-direction: column; }
 /* Sections whose content reads better across the full measure than in a column. */
 .sections .full { grid-column: 1 / -1; }
 .sections h2 {
   font-size: .72rem; text-transform: uppercase; letter-spacing: .14em;
-  font-weight: 600; color: var(--muted); margin: 0 0 .6rem;
+  font-weight: 600; color: var(--muted); margin: 0 0 .55rem;
 }
 /* --- row list: one padded link per row, shared by the homepage and /blog ---
    Rows are pulled out to the padding edge so the hover tint reads as a full-bleed
@@ -124,6 +186,14 @@ a:hover { text-decoration: underline; text-underline-offset: .18em; text-decorat
 }
 .rowlist li > a:hover { background: var(--hover); text-decoration: none; }
 .rowlist li > a:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+/* Rows carrying an icon lay out as icon + text block. */
+.item-icon {
+  flex: none; width: 21px; height: 21px; margin-top: .12rem;
+  color: var(--faint); transition: color .18s ease;
+}
+.item-body { min-width: 0; }
+.iconlist li > a { display: flex; align-items: flex-start; gap: .65rem; }
+.iconlist li > a:hover .item-icon { color: var(--accent); }
 .item-name {
   display: block; color: var(--fg); font-weight: 600;
   font-size: 1.02rem; line-height: 1.4; letter-spacing: -.005em;
@@ -149,6 +219,57 @@ a:hover { text-decoration: underline; text-underline-offset: .18em; text-decorat
 .sections .linkrow { display: flex; flex-wrap: wrap; gap: .1rem .5rem; }
 .sections .linkrow li > a { padding: .38rem .7rem; }
 
+/* --- contact ---
+   Warm terracotta ground, framed by the woven border lifted straight out of the
+   Mithila painting. border-image slices the outer 11.75% of the 1600px artwork —
+   the vine-and-bud band, the corner sun-wheel and the triangle band — and tiles
+   it around the panel, so the frame fits any height without distorting. Square
+   corners, because border-image ignores border-radius. */
+.sections .contact {
+  background: var(--terra);
+  border: 30px solid transparent;
+  border-image: url("mithila.svg") 11.75% round;
+  border-radius: 0;
+  padding: 1.1rem 1.2rem;
+}
+@media (max-width: 559px) {
+  .sections .contact { border-width: 17px; padding: .9rem .75rem; }
+}
+.contact-grid {
+  display: grid; grid-template-columns: 1fr; gap: 1.1rem; align-items: center;
+}
+@media (min-width: 560px) {
+  .contact-grid { grid-template-columns: 1fr auto; gap: 1.4rem; }
+  /* Text hugs the heading; the taller plate centres itself against it. */
+  .contact-text { align-self: start; }
+}
+/* No colour of its own: it inherits the card's, which cascades as one piece.
+   Resolving --fg here instead made it drift out of step with its own panel. */
+.contact-text p { margin: 0; font-size: 1rem; line-height: 1.55; }
+.contact-mail { margin-top: .7rem !important; }
+.contact-mail a {
+  font-weight: 600; font-size: 1.02rem;
+  border-bottom: 1px solid var(--terra-line);
+}
+.contact-mail a:hover { text-decoration: none; border-bottom-color: var(--accent); }
+/* The painting's border is now the panel's frame, so the image beside the text
+   shows only what is inside it. Cropping to the innermost frame (inset 292 of
+   1600 = 18.25%) means scaling to 1/0.635 and pulling the excess off each edge,
+   rather than shipping a second cropped copy of the artwork. */
+/* Definite width, not 100% — in a grid `auto` column that would resolve to zero.
+   The hairline makes the plate's edge deliberate: the painting's cream ground sits
+   a shade off the terracotta, which without it reads as a stray patch. */
+.contact-art-wrap {
+  position: relative; overflow: hidden;
+  width: 180px; max-width: 100%; aspect-ratio: 1;
+  justify-self: center; align-self: center;
+  border-radius: 6px; border: 1px solid var(--terra-line);
+}
+.contact-art {
+  position: absolute; display: block;
+  width: 157.48%; height: 157.48%; left: -28.74%; top: -28.74%;
+}
+
 /* Marks a post that lives on another site, so the off-site jump is not a surprise. */
 .tag {
   display: inline-block; margin-right: .45rem; padding: .1em .42em;
@@ -162,7 +283,8 @@ a:hover { text-decoration: underline; text-underline-offset: .18em; text-decorat
 .backlink a { color: var(--faint); font-weight: 600; }
 .backlink a:hover { color: var(--accent); text-decoration: none; }
 /* Same row pattern as the homepage, one size up and separated by rules. */
-.postlist { margin: 2.5rem -.7rem 0; }
+.postcard { margin-top: 2rem; }
+.postlist { margin: 0 -.7rem; }
 .postlist li + li { border-top: 1px solid var(--line); }
 .postlist li > a { padding: 1rem .7rem; }
 .postlist .item-name { font-size: 1.2rem; font-weight: 700; letter-spacing: -.015em; }
@@ -208,4 +330,7 @@ footer a:hover { color: var(--accent); text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   main { animation: none; }
   * { transition: none !important; }
+  /* No cascade either — app.js skips the stagger, this covers the CSS half. */
+  .swapping { animation: none !important; }
+  :root.theming *, :root.theming { transition-delay: 0ms !important; }
 }

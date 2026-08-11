@@ -49,14 +49,16 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Vishal Arya — fossdot.in, beside a Mithila (Madhubani) painting of a lotus rosette ringed by peacocks and fish">
+<meta property="og:image:alt" content="Photograph of Vishal Arya beside the words: Vishal Arya — using technology to chip away at a few social problems in Bihar — fossdot.in">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ m_title }}">
 <meta name="twitter:description" content="{{ m_desc }}">
 <meta name="twitter:image" content="{{ og_image | safe }}">
 <meta name="twitter:creator" content="@fossdot">
 
-{# Icons cut from the painting's central rosette. #}
+{# The "f." mark: inline SVG first so it stays crisp at any size, with PNGs cut
+   from the same mark for the platforms that will not take an SVG. #}
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%23d2603a%22/><text x=%2213.5%22 y=%2222.5%22 text-anchor=%22middle%22 font-family=%22Georgia,serif%22 font-size=%2221%22 font-weight=%22700%22 fill=%22%23fff%22>f</text><rect x=%2218%22 y=%2218.5%22 width=%224%22 height=%224%22 rx=%220.6%22 fill=%22%23fff%22/></svg>">
 <link rel="icon" type="image/png" sizes="32x32" href="{{ get_url(path='favicon-32.png', cachebust=true) | safe }}">
 <link rel="icon" type="image/png" sizes="192x192" href="{{ get_url(path='icon-192.png', cachebust=true) | safe }}">
 <link rel="apple-touch-icon" href="{{ get_url(path='apple-touch-icon.png', cachebust=true) | safe }}">
@@ -136,7 +138,7 @@
       "@id": "{{ config.base_url | safe }}/#person",
       "name": "Vishal Arya",
       "url": "{{ config.base_url | safe }}/",
-      "image": "{{ get_url(path='apple-touch-icon.png', trailing_slash=false) | safe }}",
+      "image": "{{ get_url(path='og.png', trailing_slash=false) | safe }}",
       "description": "{{ config.description }}",
       "jobTitle": "Founder, Bodhya",
       "knowsLanguage": ["en", "hi"],

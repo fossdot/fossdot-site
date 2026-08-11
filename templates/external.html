@@ -1,0 +1,26 @@
+<!doctype html>
+{# Posts published on another site. Listings link straight to the real post, so
+   this page exists only to keep the local URL from being a dead end. #}
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page.title }} — {{ config.title }}</title>
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="{{ page.extra.external_url | safe }}">
+<meta http-equiv="refresh" content="0; url={{ page.extra.external_url | safe }}">
+<link rel="stylesheet" href="{{ get_url(path='style.css', cachebust=true) | safe }}">
+</head>
+<body>
+<main>
+  <p class="backlink"><a href="{{ get_url(path='@/blog/_index.md') | safe }}">← Blog</a></p>
+  <article class="post">
+    <h1>{{ page.title }}</h1>
+    <p class="postmeta">{% if page.date %}{{ page.date | date(format="%B %-d, %Y") }} · {% endif %}Published on {{ page.extra.source }}</p>
+    <p>This post lives on {{ page.extra.source }}. Redirecting you there now —
+      <a href="{{ page.extra.external_url | safe }}" rel="noopener">open it directly</a>
+      if nothing happens.</p>
+  </article>
+</main>
+</body>
+</html>

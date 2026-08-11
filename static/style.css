@@ -6,6 +6,7 @@
   --line:   #ececea;
   --accent: #c75a35;
   --code:   #f3f1ec;
+  --hover:  rgba(0, 0, 0, .04);
   color-scheme: light;
 }
 /* dark palette — system preference (unless user forced light) or explicit toggle */
@@ -13,12 +14,14 @@
   :root:not([data-theme="light"]) {
     --bg: #161514; --fg: #f2f1ee; --muted: #a3a19b; --faint: #76746e;
     --line: #292723; --accent: #f0855c; --code: #211f1c;
+    --hover: rgba(255, 255, 255, .055);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #161514; --fg: #f2f1ee; --muted: #a3a19b; --faint: #76746e;
   --line: #292723; --accent: #f0855c; --code: #211f1c;
+  --hover: rgba(255, 255, 255, .055);
   color-scheme: dark;
 }
 
@@ -46,7 +49,25 @@ main {
 }
 
 /* --- top controls --- */
-.topbar { display: flex; justify-content: flex-end; gap: .4rem; margin-bottom: 2.5rem; }
+.topbar { display: flex; align-items: center; justify-content: flex-end; gap: .4rem; margin-bottom: 2.5rem; }
+
+/* Segmented language picker: both languages stay visible, the active one is
+   filled in — so the control never has to imply a direction. */
+.langswitch {
+  display: inline-flex; align-items: center; gap: 2px;
+  padding: 2px; border: 1px solid var(--line); border-radius: 980px;
+}
+.langopt {
+  -webkit-appearance: none; appearance: none;
+  font-family: inherit; font-size: .74rem; font-weight: 600; letter-spacing: .02em;
+  line-height: 1.4; color: var(--faint); background: transparent; border: 0;
+  padding: .26rem .62rem; border-radius: 980px; cursor: pointer;
+  transition: color .2s ease, background .2s ease;
+}
+.langopt:hover { color: var(--fg); }
+.langopt[aria-checked="true"] { color: var(--bg); background: var(--fg); cursor: default; }
+.langopt:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
 .ctrl {
   -webkit-appearance: none; appearance: none;
   font-family: inherit; font-size: .78rem; font-weight: 600; letter-spacing: .01em;
@@ -85,25 +106,67 @@ a:hover { text-decoration: underline; text-underline-offset: .18em; text-decorat
 }
 @media (min-width: 680px) { .sections { grid-template-columns: 1fr 1fr; } }
 .sections section { margin: 0; }
+/* Sections whose content reads better across the full measure than in a column. */
+.sections .full { grid-column: 1 / -1; }
 .sections h2 {
   font-size: .72rem; text-transform: uppercase; letter-spacing: .14em;
-  font-weight: 600; color: var(--muted); margin: 0 0 1.1rem;
+  font-weight: 600; color: var(--muted); margin: 0 0 .6rem;
 }
-.sections ul { list-style: none; margin: 0; padding: 0; }
-.sections li { font-size: 1.02rem; line-height: 1.5; padding: .5rem 0; }
-.sections li a { color: var(--fg); font-weight: 600; }
-.sections li a:hover { color: var(--accent); text-decoration: none; }
+/* --- row list: one padded link per row, shared by the homepage and /blog ---
+   Rows are pulled out to the padding edge so the hover tint reads as a full-bleed
+   row while the text stays optically aligned with the headings above it.
+   These are all explicit classes, so none of it reaches Markdown post content. */
+.rowlist { list-style: none; margin: 0 -.7rem; padding: 0; }
+.rowlist li { margin: 0; }
+.rowlist li > a {
+  display: block; padding: .5rem .7rem; border-radius: 10px;
+  transition: background .18s ease;
+}
+.rowlist li > a:hover { background: var(--hover); text-decoration: none; }
+.rowlist li > a:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.item-name {
+  display: block; color: var(--fg); font-weight: 600;
+  font-size: 1.02rem; line-height: 1.4; letter-spacing: -.005em;
+  transition: color .18s ease;
+}
+.rowlist li > a:hover .item-name { color: var(--accent); }
+.item-name + .desc, .item-head + .desc {
+  display: block; margin-top: .1rem; font-size: .92rem; line-height: 1.45;
+}
+/* Title and date share a baseline; the date holds a scannable right-hand column. */
+.item-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.item-date {
+  flex: none; font-size: .74rem; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--faint);
+}
+/* Sits outside the list's negative margin, so it needs no padding to align. */
+.sections .more { margin: .7rem 0 0; font-size: .95rem; }
+.sections .more a { color: var(--accent); font-weight: 600; }
+.sections .more a:hover { text-decoration: none; }
+.sections .more .arrow { display: inline-block; transition: transform .18s ease; }
+.sections .more a:hover .arrow { transform: translateX(3px); }
+/* Elsewhere is navigation, not content — a compact row rather than a tall column. */
+.sections .linkrow { display: flex; flex-wrap: wrap; gap: .1rem .5rem; }
+.sections .linkrow li > a { padding: .38rem .7rem; }
+
+/* Marks a post that lives on another site, so the off-site jump is not a surprise. */
+.tag {
+  display: inline-block; margin-right: .45rem; padding: .1em .42em;
+  border: 1px solid var(--line); border-radius: 5px;
+  font-size: .72em; font-weight: 600; letter-spacing: .02em;
+  color: var(--faint); vertical-align: .08em; white-space: nowrap;
+}
 
 /* --- blog index --- */
 .backlink { margin: 0 0 2.5rem; font-size: .9rem; }
 .backlink a { color: var(--faint); font-weight: 600; }
 .backlink a:hover { color: var(--accent); text-decoration: none; }
-.postlist { list-style: none; margin: 2.5rem 0 0; padding: 0; }
-.postlist li { padding: 1.2rem 0; border-top: 1px solid var(--line); }
-.postlist li:first-child { border-top: none; }
-.postlist li > a { font-size: 1.25rem; font-weight: 700; color: var(--fg); letter-spacing: -.01em; }
-.postlist li > a:hover { color: var(--accent); text-decoration: none; }
-.postlist .desc { display: block; margin-top: .3rem; font-size: .98rem; }
+/* Same row pattern as the homepage, one size up and separated by rules. */
+.postlist { margin: 2.5rem -.7rem 0; }
+.postlist li + li { border-top: 1px solid var(--line); }
+.postlist li > a { padding: 1rem .7rem; }
+.postlist .item-name { font-size: 1.2rem; font-weight: 700; letter-spacing: -.015em; }
+.postlist .item-head + .desc { margin-top: .25rem; font-size: .96rem; }
 
 /* --- single post --- */
 .post { max-width: 40rem; }

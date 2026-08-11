@@ -27,11 +27,21 @@ site's hand-built origins — keep both working when editing templates:
   drive the light/dark palette. Homepage-only selectors are scoped under
   `.sections` so Markdown post content (`.post`) gets normal article styling
   instead of the homepage's list/eyebrow styles.
-- **Client-side EN/HI toggle** (not Zola i18n): translatable elements carry a
+- **Client-side EN/HI switcher** (not Zola i18n): translatable elements carry a
   `data-hi` attribute holding their Hindi HTML. `app.js` snapshots each element's
   English `innerHTML` into `data-en` on load, then swaps `innerHTML` between the
-  two on toggle (persisted in `localStorage`). Elements without a `data-hi`
-  (e.g. the auto-listed blog entries on the homepage) simply stay in English.
+  two when the language changes (persisted in `localStorage`). Elements without a
+  `data-hi` (e.g. the auto-listed blog entries on the homepage) stay in English.
+  The control itself is a segmented picker — a `role="radiogroup"` of `.langopt`
+  buttons in `base.html`, showing both languages at once with the active one
+  marked by `aria-checked`. `app.js` keeps `aria-checked` and a roving `tabindex`
+  in sync, so arrow keys move within the group and it is one tab stop.
+
+Homepage list items follow a fixed shape — a single `<a>` wrapping a
+`.item-name` and an optional `.desc` (plus `.item-head`/`.item-date` for dated
+blog rows). The whole row is the link target, so keep new items in that shape
+rather than putting the anchor around the name alone. A section marked
+`.full` spans both grid columns.
 
 ### Templates
 
@@ -47,6 +57,22 @@ site's hand-built origins — keep both working when editing templates:
 - `content/blog/*.md` — posts (Markdown + TOML front matter).
 - `content/blog/_index.md` — configures the section (`sort_by = "date"`).
 - `content/_index.md` — homepage front matter (the markup is in `index.html`).
+
+**Link posts.** Writing published on Bodhya or FOSS United is listed alongside
+local posts as a stub with no body:
+
+```toml
+template = "external.html"
+[extra]
+external_url = "https://fossunited.org/blog/..."
+source = "FOSS United"
+```
+
+The listings link straight to `external_url` and badge it with `source`; the
+local URL renders via `external.html` as a `noindex` redirect so it is not a dead
+end. Because they are ordinary pages, the section's `sort_by = "date"` interleaves
+them with local posts for free. Note `render = false` would drop them from
+`section.pages` altogether — that is why they use a redirect template instead.
 
 ## Editing
 

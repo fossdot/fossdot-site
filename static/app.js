@@ -18,22 +18,47 @@
   });
   paintThemeBtn();
 
-  // --- Language toggle (English / Hindi) ---
+  // --- Language switcher (English / Hindi) ---
   // Translatable elements carry a data-hi attribute with their Hindi HTML.
   // We snapshot the English innerHTML into data-en on load, then swap between them.
-  var langBtn = document.getElementById('langBtn');
+  var langGroup = document.querySelector('.langswitch');
+  var langOpts = Array.prototype.slice.call(langGroup.querySelectorAll('.langopt'));
   var nodes = document.querySelectorAll('[data-hi]');
   nodes.forEach(function (n) { n.dataset.en = n.innerHTML; });
   var lang = localStorage.getItem('lang') || 'en';
+
   function applyLang() {
     nodes.forEach(function (n) { n.innerHTML = (lang === 'hi') ? n.dataset.hi : n.dataset.en; });
     root.lang = lang;
-    langBtn.textContent = (lang === 'en') ? 'हिंदी' : 'EN';
+    // Roving tabindex: only the selected option is in the tab order, so the
+    // group is one stop and arrow keys move within it.
+    langOpts.forEach(function (b) {
+      var on = b.dataset.lang === lang;
+      b.setAttribute('aria-checked', on ? 'true' : 'false');
+      b.tabIndex = on ? 0 : -1;
+    });
   }
-  langBtn.addEventListener('click', function () {
-    lang = (lang === 'en') ? 'hi' : 'en';
+
+  function setLang(next) {
+    if (next === lang) return;
+    lang = next;
     localStorage.setItem('lang', lang);
     applyLang();
+  }
+
+  langOpts.forEach(function (b) {
+    b.addEventListener('click', function () { setLang(b.dataset.lang); });
   });
+
+  langGroup.addEventListener('keydown', function (e) {
+    var i = langOpts.indexOf(document.activeElement);
+    var step = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1 }[e.key];
+    if (i < 0 || !step) return;
+    e.preventDefault();
+    var target = langOpts[(i + step + langOpts.length) % langOpts.length];
+    setLang(target.dataset.lang);
+    target.focus(); // move focus even if the language was already selected
+  });
+
   applyLang();
 })();

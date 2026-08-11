@@ -16,7 +16,12 @@
 <main>
 
   <div class="topbar">
-    <button id="langBtn" class="ctrl" type="button">हिंदी</button>
+    <div class="langswitch" role="radiogroup" aria-label="Language / भाषा">
+      <button class="langopt" type="button" role="radio" data-lang="en"
+              aria-checked="true" tabindex="0" aria-label="English" lang="en">EN</button>
+      <button class="langopt" type="button" role="radio" data-lang="hi"
+              aria-checked="false" tabindex="-1" aria-label="हिंदी" lang="hi">हिं</button>
+    </div>
     <button id="themeBtn" class="ctrl" type="button" aria-label="Toggle dark mode">🌙</button>
   </div>
 

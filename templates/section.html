@@ -8,11 +8,18 @@
   <h1>{{ section.title }}</h1>
   {% if section.content %}<div class="intro">{{ section.content | safe }}</div>{% endif %}
 
-  <ul class="postlist">
+  <ul class="rowlist postlist">
     {% for post in section.pages %}
+    {% set external = post.extra.external_url | default(value="") %}
     <li>
-      <a href="{{ post.permalink | safe }}">{{ post.title }}</a>
-      <span class="desc">{{ post.description }}{% if post.date %} · {{ post.date | date(format="%b %-d, %Y") }}{% endif %}</span>
+      {# `default` only fills in undefined, never an empty string — so branch. #}
+      <a href="{% if external %}{{ external | safe }}{% else %}{{ post.permalink | safe }}{% endif %}"{% if external %} rel="noopener"{% endif %}>
+        <span class="item-head">
+          <span class="item-name">{{ post.title }}</span>
+          {% if post.date %}<time class="item-date" datetime="{{ post.date }}">{{ post.date | date(format="%b %Y") }}</time>{% endif %}
+        </span>
+        <span class="desc">{% if external %}<span class="tag">{{ post.extra.source }}</span>{% endif %}{{ post.description }}</span>
+      </a>
     </li>
     {% else %}
     <li class="desc">No posts yet.</li>

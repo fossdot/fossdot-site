@@ -4,6 +4,11 @@ description = "Two months at a girls' school in West Champaran: the inputs are a
 date = 2026-08-21
 # The post went out at the old slug; keep that URL redirecting here.
 aliases = ["/blog/what-ai-can-actually-fix-in-rural-schools/"]
+
+[extra]
+# Hindi body: translations/hi/what-ai-can-fix-in-rural-schools.md
+title_hi = "AI ग्रामीण स्कूलों में क्या ठीक कर सकता है"
+description_hi = "पश्चिमी चंपारण के एक बालिका विद्यालय में दो महीने: इनपुट पहले से मौजूद हैं, टीचर और क्लास 10 के बाद का रास्ता नहीं, और वह सीमित जगह जहाँ AI असल में मदद करता है।"
 +++
 
 For the last two months I have been working with a school in West Champaran, in

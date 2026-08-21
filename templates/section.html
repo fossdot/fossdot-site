@@ -16,10 +16,10 @@
       {# `default` only fills in undefined, never an empty string — so branch. #}
       <a href="{% if external %}{{ external | safe }}{% else %}{{ post.permalink | safe }}{% endif %}"{% if external %} rel="noopener"{% endif %}>
         <span class="item-head">
-          <span class="item-name">{{ post.title }}</span>
-          {% if post.date %}<time class="item-date" datetime="{{ post.date }}">{{ post.date | date(format="%b %Y") }}</time>{% endif %}
+          <span class="item-name"{% if post.extra.title_hi %} data-hi="{{ post.extra.title_hi }}"{% endif %}>{{ post.title }}</span>
+          {% if post.date %}<time class="item-date" datetime="{{ post.date }}" data-hi="{{ post.date | date(format='%b %Y', locale='hi_IN') }}">{{ post.date | date(format="%b %Y") }}</time>{% endif %}
         </span>
-        <span class="desc">{% if external %}<span class="tag">{{ post.extra.source }}</span>{% endif %}{{ post.description }}</span>
+        <span class="desc"{% if post.extra.description_hi %} data-hi='{% if external %}<span class="tag">{{ post.extra.source }}</span>{% endif %}{{ post.extra.description_hi }}'{% endif %}>{% if external %}<span class="tag">{{ post.extra.source }}</span>{% endif %}{{ post.description }}</span>
       </a>
     </li>
     {% else %}

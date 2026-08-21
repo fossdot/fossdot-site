@@ -4,10 +4,22 @@
 {% block description %}{{ page.description | default(value=config.description) }}{% endblock description %}
 
 {% block content %}
-  <p class="backlink"><a href="{{ get_url(path='@/blog/_index.md') | safe }}">← Blog</a></p>
+  {# A post's Hindi body lives in translations/hi/<slug>.md — rendered here and
+     handed to the same data-hi switcher the homepage uses, so app.js needs no
+     special case. Keeping it in an attribute (rather than a second hidden copy)
+     also keeps one set of footnote ids in the document. #}
+  {% set hi_body = load_data(path="translations/hi/" ~ page.slug ~ ".md", format="plain", required=false) %}
+  {# Hindi month names come from the date filter's hi_IN locale. #}
+  {% if page.date %}
+    {% set_global hi_meta = page.date | date(format="%-d %B %Y", locale="hi_IN") %}
+    {% if page.reading_time %}{% set_global hi_meta = hi_meta ~ " · " ~ page.reading_time ~ " मिनट पढ़ें" %}{% endif %}
+  {% endif %}
+
+  <p class="backlink"><a href="{{ get_url(path='@/blog/_index.md') | safe }}" data-hi="← ब्लॉग">← Blog</a></p>
   <article class="post">
-    <h1>{{ page.title }}</h1>
-    <p class="postmeta">{% if page.date %}{{ page.date | date(format="%B %-d, %Y") }}{% endif %}{% if page.reading_time %} · {{ page.reading_time }} min read{% endif %}</p>
-    {{ page.content | safe }}
+    <h1{% if page.extra.title_hi %} data-hi="{{ page.extra.title_hi }}"{% endif %}>{{ page.title }}</h1>
+    <p class="postmeta"{% if hi_meta %} data-hi="{{ hi_meta }}"{% endif %}>{% if page.date %}{{ page.date | date(format="%B %-d, %Y") }}{% endif %}{% if page.reading_time %} · {{ page.reading_time }} min read{% endif %}</p>
+    {% if hi_body %}<div class="postbody" data-hi="{{ hi_body | markdown }}">{{ page.content | safe }}</div>
+    {% else %}{{ page.content | safe }}{% endif %}
   </article>
 {% endblock content %}

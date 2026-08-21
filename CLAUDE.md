@@ -31,11 +31,19 @@ site's hand-built origins — keep both working when editing templates:
   `data-hi` attribute holding their Hindi HTML. `app.js` snapshots each element's
   English `innerHTML` into `data-en` on load, then swaps `innerHTML` between the
   two when the language changes (persisted in `localStorage`). Elements without a
-  `data-hi` (e.g. the auto-listed blog entries on the homepage) stay in English.
+  `data-hi` stay in English.
   The control itself is a segmented picker — a `role="radiogroup"` of `.langopt`
   buttons in `base.html`, showing both languages at once with the active one
   marked by `aria-checked`. `app.js` keeps `aria-checked` and a roving `tabindex`
   in sync, so arrow keys move within the group and it is one tab stop.
+- **Posts are translated through that same switcher.** A post's Hindi body lives
+  in `translations/hi/<slug>.md` (plain Markdown, no front matter);
+  `page.html` renders it with `load_data` + the `markdown` filter into the
+  `data-hi` of the `.postbody` wrapper. The attribute — rather than a second
+  hidden copy of the article — is deliberate: only one language is ever in the
+  DOM, so the two bodies cannot collide over footnote ids. The post's `[extra]`
+  carries `title_hi` and `description_hi`, which cover the `<h1>` and the row in
+  every listing. Dates come from the `date` filter's `locale="hi_IN"`.
 
 Homepage list items follow a fixed shape — a single `<a>` wrapping a
 `.item-name` and an optional `.desc` (plus `.item-head`/`.item-date` for dated
@@ -57,6 +65,9 @@ rather than putting the anchor around the name alone. A section marked
 - `content/blog/*.md` — posts (Markdown + TOML front matter).
 - `content/blog/_index.md` — configures the section (`sort_by = "date"`).
 - `content/_index.md` — homepage front matter (the markup is in `index.html`).
+- `translations/hi/<slug>.md` — the Hindi body of a post. Outside `content/` on
+  purpose: it is data for a template, not a page of its own, so Zola must not
+  render or list it.
 
 **Link posts.** Writing published on Bodhya or FOSS United is listed alongside
 local posts as a stub with no body:
@@ -81,6 +92,16 @@ them with local posts for free. Note `render = false` would drop them from
   hand — `app.js` derives it from the English markup at runtime.
 - **New post**: add `content/blog/<slug>.md` with `title`, `description`, `date`.
   It appears automatically on `/blog` and (latest 3) on the homepage.
+- **Every post ships in both languages.** A new post is not finished until it has
+  `translations/hi/<slug>.md` plus `title_hi` and `description_hi` in `[extra]`;
+  without them the language switcher does nothing on that page. Translate as an
+  adaptation, not word for word — match the English register (plain, first
+  person, understated) and keep the everyday Hindi/Hinglish a reader here
+  actually uses (`स्कूल`, `क्लास 10`, `टीचर`, `साइंस`) over formal Sanskritised
+  vocabulary. Keep the footnotes, links and image alt text in the Hindi body too.
+- **No em dashes in post prose**, in either language. Use a comma, or recast the
+  sentence. (The one in a link post's title is the title it was published under
+  elsewhere, so it stays.)
 
 ## Deploying
 

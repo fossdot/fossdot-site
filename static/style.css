@@ -136,6 +136,10 @@ h1 {
   font-weight: 700; letter-spacing: -.03em; line-height: 1.05; margin: 0;
 }
 h1.name::after { content: "."; color: var(--accent); }
+/* Devanagari hangs matras above and below the line, so the tight display
+   leading that suits a Latin heading clips them once the title wraps.
+   app.js keeps <html lang> in step with the switcher. */
+:root[lang="hi"] h1 { line-height: 1.28; }
 .intro {
   margin: 1.6rem 0 0; max-width: 36rem;
   font-size: 1.2rem; line-height: 1.55; letter-spacing: -.003em; color: var(--fg);

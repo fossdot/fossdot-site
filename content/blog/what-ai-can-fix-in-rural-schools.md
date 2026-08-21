@@ -1,7 +1,9 @@
 +++
-title = "What AI Can Actually Fix in Rural Schools"
+title = "What AI Can Fix in Rural Schools"
 description = "Two months at a girls' school in West Champaran: the inputs are already there, the teachers and the pathway after Class 10 are not, and the narrow place where AI actually helps."
 date = 2026-08-21
+# The post went out at the old slug; keep that URL redirecting here.
+aliases = ["/blog/what-ai-can-actually-fix-in-rural-schools/"]
 +++
 
 For the last two months I have been working with a school in West Champaran, in
@@ -10,6 +12,8 @@ metres from the gate, but the actual village is a kilometre and a half away. On 
 clear morning you can see the mountains from the campus. This post is what I have
 seen from that one place, so take it for what it is. But I don't think the
 problem I am describing is only ours.
+
+![Girls on swings in the school field, with a three-storey school block and a school bus behind them](/west-champaran-swings.gif)
 
 ## The inputs are not the problem
 
@@ -109,8 +113,8 @@ than a prescription. On this campus we run a programme that trains local girls i
 English, computers and AI tools. If it works, the school will be able to hire
 from the village instead of losing another qualified teacher to a city. That is a
 slower thing than either of the above, and a bigger one. It changes who is
-available to hire, rather than working around the shortage. We call it School to
-Livelihood.
+available to hire, rather than working around the shortage. We call it [School to
+Livelihood](https://www.hikmatfoundation.org/school-to-livelihood).
 
 ## What it will not fix
 

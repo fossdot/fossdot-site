@@ -303,7 +303,7 @@ a:hover { text-decoration: underline; text-underline-offset: .18em; text-decorat
 .post ul, .post ol { margin: 1.15rem 0; padding-left: 1.4rem; }
 .post li { margin: .4rem 0; }
 .post a { text-decoration: underline; text-underline-offset: .18em; text-decoration-thickness: 1px; }
-.post img { max-width: 100%; height: auto; border-radius: 8px; }
+.post img { display: block; max-width: 100%; height: auto; margin: 1.7rem auto; border-radius: 8px; }
 .post blockquote {
   margin: 1.6rem 0; padding: .1rem 0 .1rem 1.2rem;
   border-left: 3px solid var(--accent); color: var(--muted); font-style: italic;

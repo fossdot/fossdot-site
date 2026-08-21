@@ -319,6 +319,15 @@ a:hover { text-decoration: underline; text-underline-offset: .18em; text-decorat
 .post pre code { background: none; padding: 0; font-size: inherit; }
 .post hr { border: none; border-top: 1px solid var(--line); margin: 2.6rem 0; }
 
+/* Footnotes. Zola wraps each definition in a div holding a label <sup> and a
+   <p>, which stack as two lines by default — the flex row makes them read as
+   one hanging-indented note. */
+.post .footnote-reference { line-height: 0; }  /* keep the marker from stretching its line */
+.post .footnote-reference a { text-decoration: none; font-weight: 700; padding: 0 .08em; }
+.post .footnote-definition { display: flex; gap: .5rem; margin: .7rem 0; font-size: .9rem; color: var(--muted); }
+.post .footnote-definition-label { flex: none; font-weight: 700; color: var(--fg); }
+.post .footnote-definition p { margin: 0; overflow-wrap: anywhere; }
+
 /* --- footer --- */
 footer {
   margin-top: 4.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line);
